@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 - Page Not Found | Frank AI</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #050505;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #e0e0e0;
+        overflow-x: hidden;
+        position: relative;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bg-gradient {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 20% 50%, rgba(0, 234, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(143, 0, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 20%, rgba(255, 0, 128, 0.08) 0%, transparent 50%);
+        animation: bgRotate 20s linear infinite;
+    }
+
+    @keyframes bgRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Floating particles */
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        animation: float 15s infinite ease-in-out;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translate(var(--tx), var(--ty)) scale(0); }
+    }
+
+    /* Glitch Effect */
+    @keyframes glitch {
+        0% {
+            text-shadow: 2px 2px #00eaff, -2px -2px #8f00ff;
+        }
+        25% {
+            text-shadow: -2px -2px #00eaff, 2px 2px #8f00ff;
+        }
+        50% {
+            text-shadow: 2px -2px #00eaff, -2px 2px #8f00ff;
+        }
+        75% {
+            text-shadow: -2px 2px #00eaff, 2px -2px #8f00ff;
+        }
+        100% {
+            text-shadow: 2px 2px #00eaff, -2px -2px #8f00ff;
+        }
+    }
+
+    /* Main Container */
+    .container-404 {
+        text-align: center;
+        padding: 40px;
+        max-width: 900px;
+        position: relative;
+        z-index: 10;
+        animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(60px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* 404 Number */
+    .error-code {
+        font-size: 15rem;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #00eaff 0%, #8f00ff 50%, #ff0080 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -10px;
+        position: relative;
+        animation: glitch 3s infinite;
+        text-shadow: 
+            3px 3px 0 rgba(0, 234, 255, 0.3),
+            -3px -3px 0 rgba(143, 0, 255, 0.3);
+    }
+
+    .error-code::before {
+        content: '404';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #00eaff 0%, #8f00ff 50%, #ff0080 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: glitchBefore 5s infinite;
+        z-index: -1;
+    }
+
+    @keyframes glitchBefore {
+        0%, 100% { transform: translate(0, 0); opacity: 0.8; }
+        20% { transform: translate(-5px, 5px); opacity: 0.5; }
+        40% { transform: translate(5px, -5px); opacity: 0.7; }
+        60% { transform: translate(-5px, -5px); opacity: 0.6; }
+        80% { transform: translate(5px, 5px); opacity: 0.5; }
+    }
+
+    /* Robot Icon */
+    .robot-icon {
+        font-size: 8rem;
+        margin-bottom: 30px;
+        animation: float-robot 3s ease-in-out infinite;
+        display: inline-block;
+        filter: drop-shadow(0 0 20px rgba(0, 234, 255, 0.5));
+    }
+
+    @keyframes float-robot {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    /* Text Content */
+    .error-title {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        animation: fadeIn 1s ease 0.3s backwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .error-message {
+        font-size: 1.4rem;
+        color: #888;
+        margin-bottom: 20px;
+        line-height: 1.8;
+        animation: fadeIn 1s ease 0.5s backwards;
+    }
+
+    .error-suggestion {
+        font-size: 1.1rem;
+        color: #aaa;
+        margin-bottom: 50px;
+        animation: fadeIn 1s ease 0.7s backwards;
+    }
+
+    /* Buttons */
+    .button-group {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeIn 1s ease 0.9s backwards;
+    }
+
+    .btn {
+        padding: 18px 45px;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        border: none;
+        font-family: inherit;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        color: #fff;
+        box-shadow: 0 10px 40px rgba(0, 234, 255, 0.3);
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 50px rgba(0, 234, 255, 0.5);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #00eaff;
+        border: 2px solid rgba(0, 234, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(0, 234, 255, 0.1);
+        border-color: #00eaff;
+        transform: translateY(-3px);
+    }
+
+    /* Quick Links */
+    .quick-links {
+        margin-top: 60px;
+        animation: fadeIn 1s ease 1.1s backwards;
+    }
+
+    .quick-links h3 {
+        font-size: 1.3rem;
+        color: #888;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .quick-link {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 15px 25px;
+        border-radius: 15px;
+        color: #aaa;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .quick-link:hover {
+        background: rgba(0, 234, 255, 0.05);
+        border-color: rgba(0, 234, 255, 0.3);
+        color: #00eaff;
+        transform: translateX(5px);
+    }
+
+    .quick-link span {
+        font-size: 1.2rem;
+    }
+
+    /* Fun Facts */
+    .fun-fact {
+        margin-top: 60px;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(0, 234, 255, 0.1);
+        border-radius: 20px;
+        animation: fadeIn 1s ease 1.3s backwards;
+    }
+
+    .fun-fact-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .fun-fact-text {
+        font-size: 1.2rem;
+        color: #00eaff;
+        font-style: italic;
+        line-height: 1.6;
+    }
+
+    /* Scanning Animation */
+    .scan-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #00eaff, transparent);
+        top: 0;
+        animation: scan 3s linear infinite;
+        opacity: 0.3;
+    }
+
+    @keyframes scan {
+        0% { top: 0%; }
+        100% { top: 100%; }
+    }
+
+    /* Error Code Background */
+    .error-code-bg {
+        position: absolute;
+        font-size: 25rem;
+        font-weight: 900;
+        color: rgba(0, 234, 255, 0.02);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    /* Hologram Effect */
+    .hologram-lines {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 234, 255, 0.03) 0px,
+            rgba(0, 234, 255, 0.03) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+        pointer-events: none;
+        animation: hologram 10s linear infinite;
+    }
+
+    @keyframes hologram {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(20px); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .error-code {
+            font-size: 8rem;
+            letter-spacing: -5px;
+        }
+
+        .robot-icon {
+            font-size: 5rem;
+        }
+
+        .error-title {
+            font-size: 2rem;
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+        }
+
+        .error-suggestion {
+            font-size: 1rem;
+        }
+
+        .button-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .links-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .container-404 {
+            padding: 20px;
+        }
+
+        .error-code-bg {
+            font-size: 15rem;
+        }
+    }
+
+    /* Loading dots animation */
+    .loading-dots {
+        display: inline-block;
+    }
+
+    .loading-dots span {
+        animation: blink 1.4s infinite both;
+    }
+
+    .loading-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .loading-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+        0%, 80%, 100% { opacity: 0; }
+        40% { opacity: 1; }
+    }
+
+    /* Circuit Board Pattern */
+    .circuit-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.02;
+        z-index: -1;
+        background-image: 
+            linear-gradient(#00eaff 1px, transparent 1px),
+            linear-gradient(90deg, #00eaff 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: circuit-move 20s linear infinite;
+    }
+
+    @keyframes circuit-move {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(50px, 50px); }
+    }
+
+    /* Glowing orb */
+    .glowing-orb {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 234, 255, 0.3), transparent);
+        filter: blur(60px);
+        animation: orb-pulse 4s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    @keyframes orb-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.3; }
+        50% { transform: scale(1.2); opacity: 0.6; }
+    }
+
+    .orb-1 {
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .orb-2 {
+        bottom: 10%;
+        right: 10%;
+        background: radial-gradient(circle, rgba(143, 0, 255, 0.3), transparent);
+        animation-delay: 2s;
+    }
+</style>
+
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-animation">
+    <div class="bg-gradient"></div>
+</div>
+
+<!-- Circuit Pattern -->
+<div class="circuit-pattern"></div>
+
+<!-- Hologram Lines -->
+<div class="hologram-lines"></div>
+
+<!-- Scan Line -->
+<div class="scan-line"></div>
+
+<!-- Glowing Orbs -->
+<div class="glowing-orb orb-1"></div>
+<div class="glowing-orb orb-2"></div>
+
+<!-- Background 404 -->
+<div class="error-code-bg">404</div>
+
+<!-- Main Container -->
+<div class="container-404">
+    <div class="robot-icon">🤖</div>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">Page Not Found</h2>
+    <p class="error-message">
+        Oops! Frank AI couldn't locate this page. It seems like you've ventured into uncharted territory.
+    </p>
+    <p class="error-suggestion">
+        The page you're looking for might have been moved, deleted, or never existed<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+    </p>
+
+    <div class="button-group">
+        <a href="#" class="btn btn-primary">🏠 Back to Home</a>
+        <a href="#" class="btn btn-secondary">📥 Download Frank AI</a>
+    </div>
+
+    <div class="quick-links">
+        <h3>Quick Links</h3>
+        <div class="links-grid">
+            <a href="#" class="quick-link">
+                <span>✨</span>
+                <span>Features</span>
+            </a>
+            <a href="#" class="quick-link">
+                <span>📢</span>
+                <span>Announcements</span>
+            </a>
+            <a href="#" class="quick-link">
+                <span>🗺️</span>
+                <span>Roadmap</span>
+            </a>
+            <a href="#" class="quick-link">
+                <span>❓</span>
+                <span>FAQ</span>
+            </a>
+            <a href="#" class="quick-link">
+                <span>💬</span>
+                <span>Discord</span>
+            </a>
+            <a href="#" class="quick-link">
+                <span>🎵</span>
+                <span>TikTok</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="fun-fact">
+        <div class="fun-fact-label">Did You Know?</div>
+        <div class="fun-fact-text" id="funFact">
+            Loading interesting fact...
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fun facts array
+    const funFacts = [
+        "Frank AI processes everything locally to protect your privacy. Your data never leaves your machine!",
+        "The 404 error code was named after room 404 at CERN where the World Wide Web was created.",
+        "Frank AI can execute code in multiple programming languages right from the interface.",
+        "Version 0.2 of Frank AI includes over 50+ improvements based on community feedback.",
+        "Frank AI's offline TTS means you can hear responses without any internet connection.",
+        "The name 'Frank' represents honest, straightforward communication - no corporate speak!",
+        "Frank AI's multi-chat system can auto-name conversations using AI intelligence.",
+        "Sox created Frank AI to give users complete control over their AI assistant.",
+        "Frank AI supports custom personalities, so it never feels like a generic chatbot.",
+        "The OpenRouter integration gives Frank AI access to multiple AI models simultaneously."
+    ];
+
+    // Display random fun fact
+    function displayRandomFact() {
+        const factElement = document.getElementById('funFact');
+        const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
+        
+        // Typing effect
+        let charIndex = 0;
+        factElement.textContent = '';
+        
+        const typeWriter = () => {
+            if (charIndex < randomFact.length) {
+                factElement.textContent += randomFact.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 30);
+            }
+        };
+        
+        setTimeout(typeWriter, 500);
+    }
+
+    displayRandomFact();
+
+    // Change fact every 10 seconds
+    setInterval(displayRandomFact, 10000);
+
+    // Generate floating particles
+    const bgAnimation = document.querySelector('.bg-animation');
+    const particleCount = 50;
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const size = Math.random() * 3 + 1;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        
+        const colors = ['rgba(0, 234, 255, 0.5)', 'rgba(143, 0, 255, 0.5)', 'rgba(255, 0, 128, 0.5)'];
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.setProperty('--tx', (Math.random() - 0.5) * 400 + 'px');
+        particle.style.setProperty('--ty', (Math.random() - 0.5) * 400 + 'px');
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        
+        bgAnimation.appendChild(particle);
+    }
+
+    // Add interactive glitch effect on hover
+    const errorCode = document.querySelector('.error-code');
+    let glitchInterval;
+
+    errorCode.addEventListener('mouseenter', () => {
+        glitchInterval = setInterval(() => {
+            errorCode.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+        }, 50);
+    });
+
+    errorCode.addEventListener('mouseleave', () => {
+        clearInterval(glitchInterval);
+        errorCode.style.transform = 'translate(0, 0)';
+    });
+
+    // Robot animation on click
+    const robot = document.querySelector('.robot-icon');
+    const robotEmojis = ['🤖', '🦾', '👾', '🛸', '⚡', '💫'];
+    let currentRobotIndex = 0;
+
+    robot.addEventListener('click', () => {
+        currentRobotIndex = (currentRobotIndex + 1) % robotEmojis.length;
+        robot.textContent = robotEmojis[currentRobotIndex];
+        robot.style.animation = 'none';
+        setTimeout(() => {
+            robot.style.animation = 'float-robot 3s ease-in-out infinite';
+        }, 10);
+    });
+
+    // Button click animations
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Create ripple effect
+            const ripple = document.createElement('span');
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.animation = 'ripple 0.6s ease-out';
+            
+            btn.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            from {
+                transform: scale(0);
+                opacity: 1;
+            }
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Quick links hover sound effect (visual only)
+    const quickLinks = document.querySelectorAll('.quick-link');
+    quickLinks.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            link.style.boxShadow = '0 5px 20px rgba(0, 234, 255, 0.3)';
+        });
+        
+        link.addEventListener('mouseleave', () => {
+            link.style.boxShadow = '';
+        });
+    });
+
+    // Parallax effect for orbs
+    document.addEventListener('mousemove', (e) => {
+        const orbs = document.querySelectorAll('.glowing-orb');
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        orbs.forEach((orb, index) => {
+            const speed = (index + 1) * 20;
+            orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+        });
+    });
+
+    // Easter egg: Konami code
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+                // Easter egg activated!
+                document.body.style.animation = 'rainbow 2s linear infinite';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                    konamiIndex = 0;
+                }, 5000);
+            }
+        } else {
+            konamiIndex = 0;
+        }
+    });
+
+    // Add rainbow animation
+    const rainbowStyle = document.createElement('style');
+    rainbowStyle.textContent = `
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(rainbowStyle);
+
+    // Loading animation
+    window.addEventListener('load', () => {
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '1';
+        }, 100);
+    });
+
+    // Console Easter Egg
+    console.log('%c404 - Page Not Found', 'font-size: 24px; font-weight: bold; background: linear-gradient(135deg, #00eaff, #8f00ff); -webkit-background-clip: text; color: transparent;');
+    console.log('%cBut you found the console! 🎉', 'font-size: 16px; color: #00eaff;');
+    console.log('%cFrank AI v0.2 - Built by Sox', 'font-size: 12px; color: #888;');
+    console.log('%cTry the Konami code for a surprise! ⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️BA', 'font-size: 10px; color: #666;');
+
+    // Random glitch effect every few seconds
+    setInterval(() => {
+        if (Math.random() > 0.7) {
+            errorCode.style.animation = 'none';
+            setTimeout(() => {
+                errorCode.style.animation = 'glitch 3s infinite';
+            }, 100);
+        }
+    }, 5000);
+
+    // Add screen shake on error code click
+    errorCode.addEventListener('click', () => {
+        document.body.style.animation = 'shake 0.5s ease';
+        setTimeout(() => {
+            document.body.style.animation = '';
+        }, 500);
+    });
+
+    // Shake animation
+    const shakeStyle = document.createElement('style');
+    shakeStyle.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+    `;
+    document.head.appendChild(shakeStyle);
+
+    // Update scan line position based on scroll
+    window.addEventListener('scroll', () => {
+        const scanLine = document.querySelector('.scan-line');
+        scanLine.style.top = (window.scrollY % window.innerHeight) + 'px';
+    });
+</script>
+
+</body>
+</html>
