@@ -1,1 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frank AI — Your Personal AI Assistant</title>
 
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #050505;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #e0e0e0;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bg-gradient {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 20% 50%, rgba(0, 234, 255, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(143, 0, 255, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+        animation: bgRotate 20s linear infinite;
+    }
+
+    @keyframes bgRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Floating particles */
+    .particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(0, 234, 255, 0.3);
+        border-radius: 50%;
+        animation: float 15s infinite ease-in-out;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translate(var(--tx), var(--ty)) scale(0); }
+    }
+
+    /* Navigation */
+    nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 10, 10, 0.8);
+        backdrop-filter: blur(20px);
+        padding: 20px 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(0, 234, 255, 0.1);
+        animation: slideDown 0.8s ease;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    nav .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    nav .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    nav ul {
+        display: flex;
+        list-style: none;
+        gap: 40px;
+    }
+
+    nav a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    nav a::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #00eaff, #8f00ff);
+        transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+        width: 100%;
+    }
+
+    nav a:hover {
+        color: #00eaff;
+    }
+
+    /* Hero Section */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 140px 20px 80px;
+        position: relative;
+    }
+
+    .hero-content {
+        max-width: 1000px;
+        animation: fadeInUp 1s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(60px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero h1 {
+        font-size: 5.5rem;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #00eaff 0%, #8f00ff 50%, #ff0080 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: -2px;
+    }
+
+    .hero .version {
+        font-size: 1.3rem;
+        color: #00eaff;
+        margin-bottom: 30px;
+        opacity: 0;
+        animation: fadeIn 1s ease 0.3s forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .hero .tagline {
+        font-size: 1.6rem;
+        margin-bottom: 50px;
+        opacity: 0;
+        animation: fadeIn 1s ease 0.5s forwards;
+        color: #b0b0b0;
+        line-height: 1.6;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 25px;
+        justify-content: center;
+        flex-wrap: wrap;
+        opacity: 0;
+        animation: fadeIn 1s ease 0.7s forwards;
+    }
+
+    .btn {
+        padding: 18px 45px;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        color: #fff;
+        box-shadow: 0 10px 40px rgba(0, 234, 255, 0.3);
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 50px rgba(0, 234, 255, 0.5);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #00eaff;
+        border: 2px solid rgba(0, 234, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(0, 234, 255, 0.1);
+        border-color: #00eaff;
+        transform: translateY(-3px);
+    }
+
+    /* Features Section */
+    .features {
+        padding: 120px 20px;
+        position: relative;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 1.3rem;
+        color: #888;
+        margin-bottom: 80px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+        margin-bottom: 80px;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 40px;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0, 234, 255, 0.05), rgba(143, 0, 255, 0.05));
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .feature-card:hover::before {
+        opacity: 1;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(0, 234, 255, 0.3);
+        box-shadow: 0 20px 60px rgba(0, 234, 255, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 25px;
+        display: inline-block;
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .feature-card h3 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+        color: #fff;
+    }
+
+    .feature-card p {
+        color: #aaa;
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+
+    /* Showcase Section */
+    .showcase {
+        padding: 120px 20px;
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .showcase-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .showcase-text h2 {
+        font-size: 3rem;
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .showcase-text p {
+        font-size: 1.2rem;
+        line-height: 1.9;
+        color: #bbb;
+        margin-bottom: 20px;
+    }
+
+    .showcase-visual {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(0, 234, 255, 0.2);
+        border-radius: 20px;
+        padding: 60px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .showcase-visual::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(from 0deg, transparent, rgba(0, 234, 255, 0.1), transparent 30%);
+        animation: rotate 8s linear infinite;
+    }
+
+    @keyframes rotate {
+        100% { transform: rotate(360deg); }
+    }
+
+    .mock-window {
+        background: #0a0a0a;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 1;
+    }
+
+    .window-header {
+        background: #1a1a1a;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .window-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+
+    .window-content {
+        padding: 30px;
+        text-align: left;
+    }
+
+    .chat-message {
+        background: rgba(0, 234, 255, 0.1);
+        border-left: 3px solid #00eaff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-family: 'Courier New', monospace;
+        animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Tech Stack */
+    .tech-stack {
+        padding: 120px 20px;
+    }
+
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .tech-item {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .tech-item:hover {
+        background: rgba(0, 234, 255, 0.05);
+        border-color: rgba(0, 234, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .tech-item h4 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: #00eaff;
+    }
+
+    .tech-item p {
+        color: #888;
+        font-size: 0.95rem;
+    }
+
+    /* Stats Section */
+    .stats {
+        padding: 100px 20px;
+        background: linear-gradient(135deg, rgba(0, 234, 255, 0.05), rgba(143, 0, 255, 0.05));
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 50px;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .stat-item {
+        opacity: 0;
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .stat-item:nth-child(1) { animation-delay: 0.1s; }
+    .stat-item:nth-child(2) { animation-delay: 0.2s; }
+    .stat-item:nth-child(3) { animation-delay: 0.3s; }
+    .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+    .stat-number {
+        font-size: 4rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+    }
+
+    .stat-label {
+        font-size: 1.2rem;
+        color: #888;
+    }
+
+    /* Roadmap */
+    .roadmap {
+        padding: 120px 20px;
+    }
+
+    .timeline {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(180deg, #00eaff, #8f00ff);
+    }
+
+    .timeline-item {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 80px;
+        position: relative;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+        grid-column: 2;
+    }
+
+    .timeline-item:nth-child(even) .timeline-empty {
+        grid-column: 1;
+    }
+
+    .timeline-content {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(0, 234, 255, 0.2);
+        border-radius: 15px;
+        padding: 30px;
+        position: relative;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: 50%;
+        top: 30px;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 20px;
+        background: #00eaff;
+        border-radius: 50%;
+        border: 4px solid #050505;
+        box-shadow: 0 0 20px #00eaff;
+        z-index: 2;
+    }
+
+    .timeline-content h3 {
+        font-size: 1.6rem;
+        color: #00eaff;
+        margin-bottom: 10px;
+    }
+
+    .timeline-content .version-tag {
+        display: inline-block;
+        background: rgba(143, 0, 255, 0.2);
+        color: #8f00ff;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+
+    .timeline-content ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .timeline-content li {
+        padding: 8px 0;
+        color: #aaa;
+        padding-left: 25px;
+        position: relative;
+    }
+
+    .timeline-content li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: #00eaff;
+    }
+
+    /* Social Section */
+    .social {
+        padding: 100px 20px;
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .social-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        max-width: 1000px;
+        margin: 60px auto 0;
+    }
+
+    .social-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .social-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 234, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .social-card:hover::before {
+        left: 100%;
+    }
+
+    .social-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(0, 234, 255, 0.3);
+        box-shadow: 0 15px 50px rgba(0, 234, 255, 0.2);
+    }
+
+    .social-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .social-card h4 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: #00eaff;
+    }
+
+    .social-card p {
+        color: #888;
+    }
+
+    /* FAQ */
+    .faq {
+        padding: 120px 20px;
+    }
+
+    .faq-list {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .faq-item {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-question {
+        padding: 25px 30px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+        user-select: none;
+    }
+
+    .faq-question:hover {
+        color: #00eaff;
+    }
+
+    .faq-toggle {
+        font-size: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .faq-item.active .faq-toggle {
+        transform: rotate(45deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.4s ease;
+        padding: 0 30px;
+        color: #aaa;
+        line-height: 1.8;
+    }
+
+    .faq-item.active .faq-answer {
+        max-height: 500px;
+        padding: 0 30px 25px;
+    }
+
+    /* Download CTA */
+    .download-cta {
+        padding: 100px 20px;
+        background: linear-gradient(135deg, rgba(0, 234, 255, 0.1), rgba(143, 0, 255, 0.1));
+        text-align: center;
+    }
+
+    .download-cta h2 {
+        font-size: 3.5rem;
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #00eaff, #8f00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .download-cta p {
+        font-size: 1.3rem;
+        color: #888;
+        margin-bottom: 50px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Footer */
+    footer {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 60px 20px 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 50px;
+        margin-bottom: 40px;
+    }
+
+    .footer-section h3 {
+        color: #00eaff;
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+    }
+
+    .footer-section p,
+    .footer-section a {
+        color: #888;
+        line-height: 1.8;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 10px;
+        transition: color 0.3s ease;
+    }
+
+    .footer-section a:hover {
+        color: #00eaff;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #555;
+    }
+
+    /* Scroll Reveal Animation */
+    .reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s ease;
+    }
+
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 3rem;
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+        }
+
+        .features-grid,
+        .tech-grid,
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .showcase-content {
+            grid-template-columns: 1fr;
+        }
+
+        .timeline::before {
+            left: 20px;
+        }
+
+        .timeline-item {
+            grid-template-columns: 1fr;
+            padding-left: 50px;
+        }
+
+        .timeline-dot {
+            left: 20px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            grid-column: 1;
+        }
+
+        nav ul {
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    /* Loading Animation */
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .loading {
+        animation: pulse 2s ease-in-out infinite;
+    }
+</style>
+
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-animation">
+    <div class="bg-gradient"></div>
+</div>
+
+<!-- Navigation -->
+<nav>
+    <div class="container">
+        <div class="logo">Frank AI</div>
+        <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#showcase">Showcase</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#connect">Connect</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Frank AI</h1>
+        <div class="version">Version 0.2 — Production Ready</div>
+        <p class="tagline">Your fully local, privacy-focused AI assistant that feels human, not robotic. Built for developers, creators, and power users who demand more.</p>
+        <div class="cta-buttons">
+            <a href="https://gofile.io/d/jaIHHy" class="btn btn-primary" target="_blank">⬇️ Download v0.2</a>
+            <a href="#features" class="btn btn-secondary">Explore Features</a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Local & Private</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">0ms</div>
+            <div class="stat-label">Network Latency</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">Customizable</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Data Tracking</div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+    <div class="container">
+        <h2 class="section-title reveal">Powerful Features</h2>
+        <p class="section-subtitle reveal">Everything you need in a modern AI assistant</p>
+        
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <div class="feature-icon">💬</div>
+                <h3>Natural Conversations</h3>
+                <p>Frank AI converses like a real person, not a typical chatbot. With custom personality settings, it adapts to your communication style and never feels robotic or corporate.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">🔒</div>
+                <h3>100% Local Privacy</h3>
+                <p>All your conversations, data, and projects stay on your machine. Frank AI respects your privacy with local memory storage and no telemetry or tracking whatsoever.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>Built with performance in mind. Smooth animations, instant responses, and efficient resource usage ensure Frank AI never slows you down.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">🎨</div>
+                <h3>Beautiful Interface</h3>
+                <p>A ChatGPT-style interface with modern design principles, smooth animations, and zero bloat. Clean, intuitive, and pleasant to use for hours.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">💻</div>
+                <h3>Code Execution</h3>
+                <p>Integrated code execution with syntax highlighting, one-click copy, and support for multiple languages. Perfect for developers and technical users.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">🗂️</div>
+                <h3>Multi-Chat System</h3>
+                <p>Organize conversations with automatic naming, project folders, and seamless switching between contexts. Never lose track of your work.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">🎯</div>
+                <h3>Project Management</h3>
+                <p>Group related chats into projects, manage settings per project, and keep your workflow organized and efficient.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">🔊</div>
+                <h3>Offline TTS</h3>
+                <p>Fully offline text-to-speech capabilities. Listen to Frank AI's responses without any internet connection or cloud dependencies.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">🚀</div>
+                <h3>OpenRouter Integration</h3>
+                <p>Seamlessly connects to OpenRouter API for fast, reliable AI responses. Switch between models and providers with ease.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">🎭</div>
+                <h3>Custom Personality</h3>
+                <p>Frank AI never introduces itself as an AI. Configure personality traits, response styles, and behavioral patterns to match your needs.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">⚙️</div>
+                <h3>Advanced Settings</h3>
+                <p>Deep customization options for power users. Control every aspect of Frank AI's behavior, appearance, and functionality.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">📝</div>
+                <h3>Smart Context</h3>
+                <p>Maintains conversation context intelligently, remembers important details, and provides relevant responses based on your history.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Showcase Section -->
+<section class="showcase" id="showcase">
+    <div class="showcase-content">
+        <div class="showcase-text reveal">
+            <h2>Experience the Difference</h2>
+            <p>Frank AI isn't just another chatbot wrapper. It's a carefully crafted desktop application designed to be your personal AI companion.</p>
+            <p>Unlike web-based alternatives, Frank AI runs entirely on your machine, giving you complete control, privacy, and performance.</p>
+            <p>Whether you're coding, writing, researching, or brainstorming, Frank AI adapts to your workflow and enhances your productivity.</p>
+            <a href="https://gofile.io/d/jaIHHy" class="btn btn-primary" target="_blank" style="margin-top: 20px;">Download Now</a>
+        </div>
+        <div class="showcase-visual reveal">
+            <div class="mock-window">
+                <div class="window-header">
+                    <div class="window-dot dot-red"></div>
+                    <div class="window-dot dot-yellow"></div>
+                    <div class="window-dot dot-green"></div>
+                </div>
+                <div class="window-content">
+                    <div class="chat-message">
+                        <strong>You:</strong> Help me optimize this Python function
+                    </div>
+                    <div class="chat-message">
+                        <strong>Frank:</strong> I'll analyze your code and suggest improvements for better performance and readability...
+                    </div>
+                    <div class="chat-message">
+                        <strong>System:</strong> Code executed successfully ✓
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="tech-stack">
+    <div class="container">
+        <h2 class="section-title reveal">Built With Modern Tech</h2>
+        <p class="section-subtitle reveal">Leveraging the best technologies for performance and reliability</p>
+        
+        <div class="tech-grid">
+            <div class="tech-item reveal">
+                <h4>Desktop Native</h4>
+                <p>Built as a true desktop application</p>
+            </div>
+            <div class="tech-item reveal">
+                <h4>OpenRouter API</h4>
+                <p>Access to multiple AI models</p>
+            </div>
+            <div class="tech-item reveal">
+                <h4>Local Storage</h4>
+                <p>All data stored on your device</p>
+            </div>
+            <div class="tech-item reveal">
+                <h4>Offline TTS</h4>
+                <p>Text-to-speech without internet</p>
+            </div>
+            <div class="tech-item reveal">
+                <h4>Custom UI</h4>
+                <p>Handcrafted interface design</p>
+            </div>
+            <div class="tech-item reveal">
+                <h4>Zero Bloat</h4>
+                <p>Efficient and lightweight</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Roadmap -->
+<section class="roadmap" id="roadmap">
+    <div class="container">
+        <h2 class="section-title reveal">Development Roadmap</h2>
+        <p class="section-subtitle reveal">Frank AI is constantly evolving</p>
+        
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <div class="timeline-empty"></div>
+                <div class="timeline-content">
+                    <span class="version-tag">RELEASED</span>
+                    <h3>Version 0.2</h3>
+                    <ul>
+                        <li>Enhanced UI with smooth animations</li>
+                        <li>Multi-chat system with auto-naming</li>
+                        <li>Code execution and syntax highlighting</li>
+                        <li>Project management system</li>
+                        <li>Offline TTS integration</li>
+                        <li>Custom personality settings</li>
+                        <li>Performance optimizations</li>
+                    </ul>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <span class="version-tag">IN DEVELOPMENT</span>
+                    <h3>Version 0.3</h3>
+                    <ul>
+                        <li>Plugin system for extensibility</li>
+                        <li>Image generation integration</li>
+                        <li>Voice input capabilities</li>
+                        <li>Advanced code editor</li>
+                        <li>Markdown rendering improvements</li>
+                        <li>Export conversations to multiple formats</li>
+                        <li>Themes and customization options</li>
+                    </ul>
+                </div>
+                <div class="timeline-empty"></div>
+                <div class="timeline-dot"></div>
+            </div>
+
+            <div class="timeline-item reveal">
+                <div class="timeline-empty"></div>
+                <div class="timeline-content">
+                    <span class="version-tag">PLANNED</span>
+                    <h3>Version 0.4</h3>
+                    <ul>
+                        <li>Local model support (Ollama integration)</li>
+                        <li>RAG system for document querying</li>
+                        <li>Collaborative features</li>
+                        <li>Advanced memory system</li>
+                        <li>Web scraping capabilities</li>
+                        <li>API access to Frank AI</li>
+                        <li>Mobile companion app</li>
+                    </ul>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+
+            <div class="timeline-item reveal">
+                <div class="timeline-content">
+                    <span class="version-tag">FUTURE</span>
+                    <h3>Version 1.0</h3>
+                    <ul>
+                        <li>Complete stability and polish</li>
+                        <li>Comprehensive documentation</li>
+                        <li>Community plugin marketplace</li>
+                        <li>Enterprise features</li>
+                        <li>Multi-language support</li>
+                        <li>Advanced automation tools</li>
+                        <li>Full ecosystem integration</li>
+                    </ul>
+                </div>
+                <div class="timeline-empty"></div>
+                <div class="timeline-dot"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq" id="faq">
+    <div class="container">
+        <h2 class="section-title reveal">Frequently Asked Questions</h2>
+        <p class="section-subtitle reveal">Everything you need to know about Frank AI</p>
+        
+        <div class="faq-list">
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>Is Frank AI completely free?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Frank AI is free to download and use. However, you'll need your own OpenRouter API key to access AI models. OpenRouter offers competitive pricing and pay-as-you-go options.
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>What platforms does Frank AI support?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Currently, Frank AI is available for Windows, macOS, and Linux. We're working on optimizing the experience for each platform.
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>Is my data really private?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Absolutely. All conversations and data are stored locally on your device. Frank AI doesn't collect, transmit, or store any of your information on external servers. Your privacy is paramount.
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>Do I need an internet connection?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    You need internet to connect to the OpenRouter API for AI responses. However, features like TTS, local storage, and the UI work completely offline.
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>Can I customize Frank AI's personality?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Yes! Frank AI offers extensive personality customization. You can adjust response style, tone, verbosity, and behavior to match your preferences.
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>How does Frank AI compare to ChatGPT?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Frank AI offers complete privacy, local storage, offline capabilities, and deep customization that web-based alternatives can't provide. It's designed for users who want control over their AI assistant.
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>Will there be a mobile version?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    A mobile companion app is planned for future releases. Stay tuned for updates on the roadmap!
+                </div>
+            </div>
+
+            <div class="faq-item reveal">
+                <div class="faq-question">
+                    <span>How can I support development?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    You can support Frank AI through donations, spreading the word, providing feedback, and reporting bugs. Every bit helps make Frank AI better!
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Social/Connect Section -->
+<section class="social" id="connect">
+    <div class="container">
+        <h2 class="section-title reveal">Connect With the Creator</h2>
+        <p class="section-subtitle reveal">Follow Sox and stay updated on Frank AI development</p>
+        
+        <div class="social-grid">
+            <a href="https://cash.app/$SoulSquid" class="social-card reveal" target="_blank">
+                <div class="social-icon">💵</div>
+                <h4>Support on CashApp</h4>
+                <p>$SoulSquid</p>
+            </a>
+
+            <a href="https://www.tiktok.com/@Epicface_6" class="social-card reveal" target="_blank">
+                <div class="social-icon">🎵</div>
+                <h4>Follow on TikTok</h4>
+                <p>@Epicface_6</p>
+            </a>
+
+            <a href="https://discord.com/users/rebel_020" class="social-card reveal" target="_blank">
+                <div class="social-icon">💬</div>
+                <h4>Chat on Discord</h4>
+                <p>rebel_020</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Download CTA -->
+<section class="download-cta">
+    <div class="container">
+        <h2 class="reveal">Ready to Experience Frank AI?</h2>
+        <p class="reveal">Download version 0.2 now and revolutionize the way you interact with AI. Completely free, completely private.</p>
+        <div class="reveal">
+            <a href="https://gofile.io/d/jaIHHy" class="btn btn-primary" target="_blank" style="font-size: 1.4rem; padding: 20px 60px;">⬇️ Download Frank AI v0.2</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Frank AI</h3>
+            <p>Your fully local, privacy-focused AI assistant built by Sox. Designed for developers, creators, and power users.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <a href="#features">Features</a>
+            <a href="#showcase">Showcase</a>
+            <a href="#roadmap">Roadmap</a>
+            <a href="#faq">FAQ</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Resources</h3>
+            <a href="https://gofile.io/d/jaIHHy" target="_blank">Download</a>
+            <a href="#faq">Documentation</a>
+            <a href="#connect">Support</a>
+            <a href="#connect">Community</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Connect</h3>
+            <a href="https://www.tiktok.com/@Epicface_6" target="_blank">TikTok</a>
+            <a href="https://discord.com/users/rebel_020" target="_blank">Discord</a>
+            <a href="https://cash.app/$SoulSquid" target="_blank">Support Development</a>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>© 2025 Frank AI • Created by Sox • All Rights Reserved</p>
+        <p style="margin-top: 10px; opacity: 0.6;">Built with passion for privacy, performance, and user experience.</p>
+    </div>
+</footer>
+
+<script>
+    // Scroll Reveal Animation
+    const revealElements = document.querySelectorAll('.reveal');
+    
+    const revealOnScroll = () => {
+        revealElements.forEach(el => {
+            const elementTop = el.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            
+            if (elementTop < windowHeight - 100) {
+                el.classList.add('active');
+            }
+        });
+    };
+    
+    window.addEventListener('scroll', revealOnScroll);
+    revealOnScroll();
+
+    // FAQ Accordion
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            
+            // Close all other items
+            faqItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                }
+            });
+            
+            // Toggle current item
+            if (isActive) {
+                item.classList.remove('active');
+            } else {
+                item.classList.add('active');
+            }
+        });
+    });
+
+    // Smooth Scroll for Navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Generate Floating Particles
+    const bgAnimation = document.querySelector('.bg-animation');
+    const particleCount = 50;
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+        particle.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        bgAnimation.appendChild(particle);
+    }
+
+    // Parallax Effect for Hero
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero-content');
+        if (hero && scrolled < window.innerHeight) {
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.8;
+        }
+    });
+
+    // Add hover effect to feature cards
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            card.style.setProperty('--mouse-x', x + 'px');
+            card.style.setProperty('--mouse-y', y + 'px');
+        });
+    });
+
+    // Typing Effect for Chat Messages
+    const chatMessages = document.querySelectorAll('.chat-message');
+    chatMessages.forEach((msg, index) => {
+        msg.style.animationDelay = (index * 0.3) + 's';
+    });
+
+    // Stats Counter Animation
+    const statNumbers = document.querySelectorAll('.stat-number');
+    let hasAnimated = false;
+
+    const animateStats = () => {
+        const statsSection = document.querySelector('.stats');
+        const rect = statsSection.getBoundingClientRect();
+        
+        if (rect.top < window.innerHeight && !hasAnimated) {
+            hasAnimated = true;
+            // Stats are already showing their final values
+        }
+    };
+
+    window.addEventListener('scroll', animateStats);
+
+    // Add glitch effect to title on hover
+    const title = document.querySelector('.hero h1');
+    if (title) {
+        title.addEventListener('mouseenter', () => {
+            title.style.animation = 'none';
+            setTimeout(() => {
+                title.style.animation = '';
+            }, 10);
+        });
+    }
+
+    // Mobile Menu Toggle (for future implementation)
+    const createMobileMenu = () => {
+        if (window.innerWidth <= 768) {
+            // Mobile menu logic can be added here
+        }
+    };
+
+    window.addEventListener('resize', createMobileMenu);
+    createMobileMenu();
+
+    // Loading Animation
+    window.addEventListener('load', () => {
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '1';
+        }, 100);
+    });
+
+    // Add intersection observer for better performance
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, observerOptions);
+
+    revealElements.forEach(el => observer.observe(el));
+
+    // Dynamic color shifting
+    let hue = 180;
+    setInterval(() => {
+        hue = (hue + 0.5) % 360;
+        document.documentElement.style.setProperty('--dynamic-hue', hue);
+    }, 50);
+
+    // Console Easter Egg
+    console.log('%cFrank AI v0.2', 'font-size: 24px; font-weight: bold; background: linear-gradient(135deg, #00eaff, #8f00ff); -webkit-background-clip: text; color: transparent;');
+    console.log('%cBuilt by Sox with ❤️', 'font-size: 14px; color: #00eaff;');
+    console.log('%cInterested in the code? Check out the source!', 'font-size: 12px; color: #888;');
+</script>
+
+</body>
+</html>
